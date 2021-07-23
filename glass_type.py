@@ -61,16 +61,16 @@ def prediction(model, ri, na, mg, al, si, k, ca, ba, fe):
     else:
         return "headlamps".upper()
 
-# Add title on the main page and in the sidebar.
+# S4.1: Add title on the main page and in the sidebar.
 st.title("Glass Type Predictor")
 st.sidebar.title("Glass Type Features")
 
-# Using if statement, display raw data on the click of the checkbox.
+# S5.1: Using if statement, display raw data on the click of the checkbox.
 if st.sidebar.checkbox("Show raw data"):
     st.subheader("Glass Type Data set")
     st.dataframe(glass_df)
 
-# Add a multiselect widget to allow the user to select multiple visualisation.
+# S6.1: Add a multiselect widget to allow the user to select multiple visualisation.
 # Add a subheader in the sidebar with label "Visualisation Selector"
 st.sidebar.subheader("Visualisation Selector")
 
@@ -82,7 +82,7 @@ plot_list = st.sidebar.multiselect("Select the Charts/Plots:",
                                      'Count Plot','Pie Chart', 'Box Plot'))
 
 
-# Display Streamlit native line chart and area chart
+# S6.2: Display Streamlit native line chart and area chart
 # Display line chart 
 if 'Line Chart' in plot_list:
     st.subheader("Line Chart")
@@ -93,7 +93,8 @@ if 'Area Chart' in plot_list:
     st.subheader("Area Chart")
     st.area_chart(glass_df)
 
-# Display the plots when the user selects them using multiselect widget.
+#  Display the plots when the user selects them using multiselect widget.
+
 # import 'seaborn' and 'matplotlib.pyplot' module.
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -122,7 +123,7 @@ if 'Pie Chart' in plot_list:
             startangle = 30, explode = np.linspace(.06, .16, 6))
     st.pyplot()
 
-# Display box plot using matplotlib module and 'st.pyplot()'
+# S6.4: Display box plot using matplotlib module and 'st.pyplot()'
 if 'Box Plot' in plot_list:
     st.subheader("Box Plot")
     column = st.sidebar.selectbox("Select the column for boxplot",
@@ -192,4 +193,20 @@ if classifier =='Random Forest Classifier':
         st.write("The Type of glass predicted is:", glass_type)
         st.write("Accuracy", accuracy.round(2))
         plot_confusion_matrix(rf_clf, X_test, y_test)
+        st.pyplot()
+
+if classifier =='Logistic Regression':
+    st.sidebar.subheader("Model Hyperparameters")
+    c_value = st.sidebar.number_input("C", 1, 100, step = 1)
+    max_iter_input = st.sidebar.number_input("Maximum iterations", 10, 10000, step = 10)
+        
+    if st.sidebar.button('Classify'):
+        st.subheader("Logistic Regression")
+        log_reg = LogisticRegression(C = c_value, max_iter = max_iter_input)
+        log_reg.fit(X_train, y_train)
+        accuracy = log_reg.score(X_test, y_test)
+        glass_type = prediction(log_reg, ri, na, mg, al, si, k, ca, ba, fe)
+        st.write("The Type of glass predicted is:", glass_type)
+        st.write("Accuracy", accuracy.round(2))
+        plot_confusion_matrix(log_reg, X_test, y_test)
         st.pyplot()
