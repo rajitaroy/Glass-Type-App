@@ -1,5 +1,5 @@
-To run the code, open cmd:  
+## Steps to run:    
 
 1. `cd Glass-Type-App`  
 
-2. `stream run glass_type.py`
+2. `streamlit run glass_type.py`
